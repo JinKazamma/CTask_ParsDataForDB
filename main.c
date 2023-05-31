@@ -35,5 +35,22 @@ int main()
     printf("Entered in %s\n",database);
 
 
+    char query[256];
+    sprintf(query,"INSERT INTO HashTable (hash, string) VALUES ('%s','%s')",hash,strForHash);
+    if (mysql_query(conn, query)) 
+    {
+        fprintf(stderr, "%s\n", mysql_error(conn));
+        mysql_close(conn);
+        exit(1);
+    }
+    else 
+    printf("Hash inserted successfully\n");
+
+    mysql_close(conn);
+    exit(0);
+
+
+
+
     return 0;
 }
