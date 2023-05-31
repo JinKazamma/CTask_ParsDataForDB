@@ -9,6 +9,8 @@ void hashing(const char* strForHash, size_t len, unsigned char hash[SHA256_DIGES
 {
     SHA256((const unsigned char *)strForHash, len, hash);
 }
+
+
 void ConnectToSQL(MYSQL *mySQL)
 {
     const char *server = "localhost";
@@ -19,13 +21,15 @@ void ConnectToSQL(MYSQL *mySQL)
     if(!mysql_real_connect(mySQL,server,user,password,database,0,NULL,0))
     {
         fprintf(stderr, "%s\n", mysql_error(mySQL));
-        mysql_close(mySQL);
-        exit(1);
+        //mysql_close(mySQL);
+        //exit(1);
     }
     else 
     printf("Entered in %s\n",database);
 }
-void CheckQuery(MYSQL *mySQL, MYSQL_RES *res, char hashStr[SHA256_DIGEST_LENGTH * 2 + 1])
+
+
+bool CheckQuery(MYSQL *mySQL, MYSQL_RES *res, char hashStr[SHA256_DIGEST_LENGTH * 2 + 1])
 {
     char CheckQuery[SIZE_OF_QUERY];
     sprintf(CheckQuery, "SELECT hash FROM HashTable WHERE hash='%s'", hashStr);
@@ -42,14 +46,17 @@ void CheckQuery(MYSQL *mySQL, MYSQL_RES *res, char hashStr[SHA256_DIGEST_LENGTH 
         unsigned int num_rows = mysql_num_rows(res);
         if(num_rows > 0)
         {
-            printf("Hash already exists in table\n");
+            //printf("Hash already exists in table\n");
             mysql_free_result(res);
-            mysql_close(mySQL);
-            exit(1);
+            return true;
         }
-        mysql_free_result(res);
+        else
+        return false;
     }
+
 }
+
+
 void Query(MYSQL *mySQL, MYSQL_RES *res, char hashStr[SHA256_DIGEST_LENGTH * 2 + 1],char strForHash[SIZE_OF_QUERY])
 {
     char query[SIZE_OF_QUERY];
@@ -62,14 +69,20 @@ void Query(MYSQL *mySQL, MYSQL_RES *res, char hashStr[SHA256_DIGEST_LENGTH * 2 +
     }
     else 
     printf("Hash inserted successfully\n");
-
-    mysql_close(mySQL);
-    exit(0);
 }
+
+
 int main() 
 {
     char strForHash[SIZE_OF_QUERY];
     unsigned char hash[SHA256_DIGEST_LENGTH];
+    MYSQL *mySQL = mysql_init(NULL);
+    MYSQL_RES *res;
+    MYSQL_ROW row;
+    ConnectToSQL(mySQL);
+    while(true)
+    {
+    
     printf("Enter string for hashing: ");
     fgets(strForHash,sizeof(strForHash),stdin);
     strForHash[strcspn(strForHash, "\n")] = 0;
@@ -79,11 +92,13 @@ int main()
     sprintf(&hashStr[i * 2], "%02x", hash[i]);
     }
     printf("Hash value for '%s' is '%s'\n", strForHash, hashStr);
-    MYSQL *mySQL = mysql_init(NULL);
-    MYSQL_RES *res;
-    MYSQL_ROW row;
-    ConnectToSQL(mySQL);
-    CheckQuery(mySQL,res,hashStr);
-    Query(mySQL,res,hashStr,strForHash);
+    
+    if(CheckQuery(mySQL,res,hashStr))
+    {
+        printf("Hash already exists in table\n");
+    }
+    else
+        Query(mySQL,res,hashStr,strForHash);
+    }
     return 0;
 }
