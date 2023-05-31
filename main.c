@@ -71,7 +71,8 @@ int main()
     char strForHash[SIZE_OF_QUERY];
     unsigned char hash[SHA256_DIGEST_LENGTH];
     printf("Enter string for hashing: ");
-    scanf("%s", strForHash);
+    fgets(strForHash,sizeof(strForHash),stdin);
+    strForHash[strcspn(strForHash, "\n")] = 0;
     hashing(strForHash,strlen(strForHash),hash);
     char hashStr[SHA256_DIGEST_LENGTH * 2 + 1];
     for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
