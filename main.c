@@ -15,10 +15,10 @@ void hashing(const char* strForHash, size_t len, unsigned char hash[SHA256_DIGES
 
 void ConnectToSQL(MYSQL *mySQL)
 {
-    const char *server = "localhost";
-    const char *user = "Testuser";
-    const char *password = "13243546Aa@";
-    const char *database = "Base4Test";
+    const char *const server = "localhost";
+    const char *const user = "Testuser";
+    const char *const password = "13243546Aa@";
+    const char *const database = "Base4Test";
 
     if(!mysql_real_connect(mySQL,server,user,password,database,0,NULL,0))
     {
@@ -51,7 +51,7 @@ bool CheckQuery(MYSQL *mySQL, MYSQL_RES *res, char hashStr[SHA256_DIGEST_LENGTH 
         }
         else 
         mysql_free_result(res);
-        return false;
+    return false;
     }
 
 }
@@ -77,26 +77,26 @@ int main()
     unsigned char hash[SHA256_DIGEST_LENGTH];
     MYSQL *mySQL = mysql_init(NULL);
     MYSQL_RES *res;
-    MYSQL_ROW row;
     ConnectToSQL(mySQL);
     while(true)
     {
-    printf("Enter string for hashing: ");
-    fgets(strForHash,sizeof(strForHash),stdin);
-    strForHash[strcspn(strForHash, "\n")] = 0;
-    hashing(strForHash,strlen(strForHash),hash);
-    char hashStr[SHA256_DIGEST_LENGTH * 2 + 1];
-    for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
-    sprintf(&hashStr[i * 2], "%02x", hash[i]);
-    }
-    printf("Hash value for '%s' is '%s'\n", strForHash, hashStr);
+        printf("Enter string for hashing: ");
+        fgets(strForHash,sizeof(strForHash),stdin);
+        strForHash[strcspn(strForHash, "\n")] = 0;
+        hashing(strForHash,strlen(strForHash),hash);
+        char hashStr[SHA256_DIGEST_LENGTH * 2 + 1];
+        for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) 
+            {
+                sprintf(&hashStr[i * 2], "%02x", hash[i]);
+            }
+        printf("Hash value for '%s' is '%s'\n", strForHash, hashStr);
     
-    if(CheckQuery(mySQL,res,hashStr))
-    {
-        printf("Hash already exists in table\n");
-    }
-    else
-        Query(mySQL,res,hashStr,strForHash);
+        if(CheckQuery(mySQL,res,hashStr))
+            {
+                printf("Hash already exists in table\n");
+            }
+        else
+            Query(mySQL,res,hashStr,strForHash);
     }
     return 0;
 }
