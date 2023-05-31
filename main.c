@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <openssl/sha.h>
 #include <mysql/mysql.h>
-#define SIZE_OF_QUERY 1000
+#define QUERYSTRING_SIZE 51
+#define SIZE_OF_STRING 500
+#define SIZE_OF_QUERY SHA256_DIGEST_LENGTH*2+1+SIZE_OF_STRING+QUERYSTRING_SIZE
 
 void hashing(const char* strForHash, size_t len, unsigned char hash[SHA256_DIGEST_LENGTH])
 {
@@ -21,8 +23,6 @@ void ConnectToSQL(MYSQL *mySQL)
     if(!mysql_real_connect(mySQL,server,user,password,database,0,NULL,0))
     {
         fprintf(stderr, "%s\n", mysql_error(mySQL));
-        //mysql_close(mySQL);
-        //exit(1);
     }
     else 
     printf("Entered in %s\n",database);
@@ -49,7 +49,8 @@ bool CheckQuery(MYSQL *mySQL, MYSQL_RES *res, char hashStr[SHA256_DIGEST_LENGTH 
             mysql_free_result(res);
             return true;
         }
-        else
+        else 
+        mysql_free_result(res);
         return false;
     }
 
@@ -70,10 +71,9 @@ void Query(MYSQL *mySQL, MYSQL_RES *res, char hashStr[SHA256_DIGEST_LENGTH * 2 +
     printf("Hash inserted successfully\n");
 }
 
-
 int main() 
 {
-    char strForHash[SIZE_OF_QUERY];
+    char strForHash[SIZE_OF_STRING];
     unsigned char hash[SHA256_DIGEST_LENGTH];
     MYSQL *mySQL = mysql_init(NULL);
     MYSQL_RES *res;
