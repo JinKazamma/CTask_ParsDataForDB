@@ -46,7 +46,6 @@ bool CheckQuery(MYSQL *mySQL, MYSQL_RES *res, char hashStr[SHA256_DIGEST_LENGTH 
         unsigned int num_rows = mysql_num_rows(res);
         if(num_rows > 0)
         {
-            //printf("Hash already exists in table\n");
             mysql_free_result(res);
             return true;
         }
@@ -82,7 +81,6 @@ int main()
     ConnectToSQL(mySQL);
     while(true)
     {
-    
     printf("Enter string for hashing: ");
     fgets(strForHash,sizeof(strForHash),stdin);
     strForHash[strcspn(strForHash, "\n")] = 0;
