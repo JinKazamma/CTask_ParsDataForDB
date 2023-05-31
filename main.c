@@ -14,7 +14,12 @@ int main()
     const char* strForHash = "hello world";
     unsigned char hash[SHA256_DIGEST_LENGTH];
     hashing(strForHash,strlen(strForHash),hash);
+    char hashStr[SHA256_DIGEST_LENGTH * 2 + 1];
+    for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+    sprintf(&hashStr[i * 2], "%02x", hash[i]);
+    }
 
+    printf("Hash value for '%s' is '%s'\n", strForHash, hashStr);
     MYSQL *conn;
     MYSQL_RES *res;
     MYSQL_ROW row;
@@ -36,7 +41,7 @@ int main()
 
 
     char query[256];
-    sprintf(query,"INSERT INTO HashTable (hash, string) VALUES ('%s','%s')",hash,strForHash);
+    sprintf(query,"INSERT INTO HashTable (hash, string) VALUES ('%s','%s')",hashStr,strForHash);
     if (mysql_query(conn, query)) 
     {
         fprintf(stderr, "%s\n", mysql_error(conn));
