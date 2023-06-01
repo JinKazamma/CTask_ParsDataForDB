@@ -11,8 +11,8 @@ sudo apt-get update
 sudo apt-get install -y mysql-server libmysqlclient-dev
 
 # Создание пользователя
-mysql -uroot -e "CREATE USER '$MYSQL_USER'@'localhost' IDENTIFIED BY '$MYSQL_USER_PASS'"
-mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO '$MYSQL_USER'@'localhost'"
+sudo mysql -uroot -e "CREATE USER '$MYSQL_USER'@'localhost' IDENTIFIED BY '$MYSQL_USER_PASS'"
+sudo mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO '$MYSQL_USER'@'localhost'"
 
 # Создание базы данных и таблицы
 mysql -u$MYSQL_USER -p$MYSQL_USER_PASS -e "CREATE DATABASE $MYSQL_DATABASE"
