@@ -53,8 +53,8 @@ bool CheckQuery(MYSQL *mySQL, MYSQL_RES *res, char hashStr[SHA256_DIGEST_LENGTH 
         {
             mysql_free_result(res);
         }
-    return false;
     }
+    return false;
 }
 
 
