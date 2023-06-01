@@ -49,8 +49,10 @@ bool CheckQuery(MYSQL *mySQL, MYSQL_RES *res, char hashStr[SHA256_DIGEST_LENGTH 
             mysql_free_result(res);
             return true;
         }
-        else 
-        mysql_free_result(res);
+        else
+        {
+            mysql_free_result(res);
+        }
     return false;
     }
 
@@ -96,7 +98,9 @@ int main()
                 printf("Hash already exists in table\n");
             }
         else
+            {
             Query(mySQL,res,hashStr,strForHash);
+            }
     }
     return 0;
 }
