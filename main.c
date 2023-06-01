@@ -31,10 +31,10 @@ void ConnectToSQL(MYSQL *mySQL)
 
 bool CheckQuery(MYSQL *mySQL, MYSQL_RES *res, char hashStr[SHA256_DIGEST_LENGTH * 2 + 1])
 {
-    char CheckQuery[SIZE_OF_QUERY];
-    sprintf(CheckQuery, "SELECT hash FROM HashTable WHERE hash='%s'", hashStr);
+    char StringCheckQuery[SIZE_OF_QUERY];
+    sprintf(StringCheckQuery, "SELECT hash FROM HashTable WHERE hash='%s'", hashStr);
 
-    if(mysql_query(mySQL, CheckQuery))
+    if(mysql_query(mySQL, StringCheckQuery))
     {
         fprintf(stderr, "%s\n", mysql_error(mySQL));
         mysql_close(mySQL);
@@ -55,7 +55,6 @@ bool CheckQuery(MYSQL *mySQL, MYSQL_RES *res, char hashStr[SHA256_DIGEST_LENGTH 
         }
     return false;
     }
-
 }
 
 
